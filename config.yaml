@@ -1,0 +1,4 @@
+panel:
+  device: /dev/ttyUSB0
+controller:
+  device: /dev/ttyUSB1

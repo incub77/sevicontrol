@@ -1,0 +1,19 @@
+[Unit]
+Description=SeviControl Service
+Requires=sevi-control.socket
+After=network.target
+
+[Service]
+PIDFile=/run/sevi-control/pid
+User=nobody
+Group=nogroup
+RuntimeDirectory=gunicorn
+WorkingDirectory=/home/sevictl
+ExecStart=/usr/bin/gunicorn3 --pid /run/sevi-control/pid  \
+	--bind unix:/run/sevi-control/socket SeviControl:app
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

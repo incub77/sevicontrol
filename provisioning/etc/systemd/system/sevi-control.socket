@@ -1,0 +1,8 @@
+[Unit]
+Description=SeviControl socket
+
+[Socket]
+ListenStream=/run/sevi-control/socket
+
+[Install]
+WantedBy=sockets.target

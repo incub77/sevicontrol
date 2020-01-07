@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="material-components-web.min.css" rel="stylesheet">
+    <script src="material-components-web.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        .my-card-content {
+            padding: 16px;
+        }
+
+        .put-right {
+            margin-left: auto;
+            margin-right: 0;
+        }
+    </style>
+    <title>SeviControl 2000</title>
+</head>
+<body>
+<header class=" mdc-top-app-bar mdc-top-app-bar--short">
+    <div class="mdc-top-app-bar__row">
+        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <span class="mdc-top-app-bar__title">SeviControl 2000</span>
+        </section>
+    </div>
+</header>
+
+<div class="mdc-layout-grid mdc-layout-grid--fixed-column-width" style="max-width: 800px; margin-top: 40px;">
+    <div class="mdc-layout-grid__inner">
+        <!-- First cell / status box-->
+        <!-- TODO: status of panel -->
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+            <div class="mdc-card my-card-content">
+                <h2 class="mdc-typography mdc-typography--headline6">Status</h2>
+                <div class="mdc-card__action">
+                    <h3 class="mdc-typography mdc-typography--subtitle2">Power</h3>
+                    <h3 class="mdc-typography mdc-typography--subtitle2 put-right" id="power_text"></h3>
+                </div>
+                <div class="mdc-card__action">
+                    <h3 class="mdc-typography mdc-typography--subtitle2">Mode</h3>
+                    <h3 class="mdc-typography mdc-typography--subtitle2 put-right" id="mode_text"></h3>
+                </div>
+                <div class="mdc-card__action">
+                    <h3 class="mdc-typography mdc-typography--subtitle2">Level</h3>
+                    <h3 class="mdc-typography mdc-typography--subtitle2 put-right" id="level_text"></h3>
+                </div>
+            </div>
+        </div>
+        <!-- Second cell / control card-->
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+            <div class="mdc-card my-card-content">
+                <h2 class="mdc-typography mdc-typography--headline6">Control</h2>
+                <div class="mdc-card__actions">
+                    <h3 class="mdc-typography mdc-typography--subtitle2">Power</h3>
+                    <div class="mdc-switch put-right" id="control-power-switch" style="width: 15%;">
+                        <div class="mdc-switch__track"></div>
+                        <div class="mdc-switch__thumb-underlay">
+                            <div class="mdc-switch__thumb">
+                                <input type="checkbox" id="basic-switch" class="mdc-switch__native-control"
+                                       role="switch">
+                            </div>
+                        </div>
+                    </div>
+                    <label for="basic-switch">off/on</label>
+                </div>
+                <div class="mdc-card__actions">
+                    <h3 class="mdc-typography mdc-typography--subtitle2">Mode</h3>
+                    <div class="mdc-form-field put-right" id="control-mode-form" style="width: 70%;">
+                        <div class="mdc-radio" id="control-mode-radio">
+                            <input class="mdc-radio__native-control" type="radio" id="switching" name="mode_radio"
+                                   checked>
+                            <div class="mdc-radio__background">
+                                <div class="mdc-radio__outer-circle"></div>
+                                <div class="mdc-radio__inner-circle"></div>
+                            </div>
+                        </div>
+                        <label for="switching">Switching</label>
+                        <div class="mdc-radio">
+                            <input class="mdc-radio__native-control" type="radio" id="rushing" name="mode_radio">
+                            <div class="mdc-radio__background">
+                                <div class="mdc-radio__outer-circle"></div>
+                                <div class="mdc-radio__inner-circle"></div>
+                            </div>
+                        </div>
+                        <label for="rushing">Rushing</label>
+                    </div>
+                </div>
+                <div class="mdc-card__actions">
+                    <h3 class="mdc-typography mdc-typography--subtitle2">Level</h3>
+                    <!-- TODO: replace slider with checkbox? -->
+                    <div class="mdc-slider mdc-slider--discrete put-right" tabindex="0" role="slider"
+                         aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" data-step="1"
+                         aria-label="Select Value" style="width: 60%;" id="control-level-slider">
+                        <div class="mdc-slider__track-container">
+                            <div class="mdc-slider__track"></div>
+                        </div>
+                        <div class="mdc-slider__thumb-container">
+                            <div class="mdc-slider__pin">
+                                <span class="mdc-slider__pin-value-marker"></span>
+                            </div>
+                            <svg class="mdc-slider__thumb" width="21" height="21">
+                                <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                            </svg>
+                            <div class="mdc-slider__focus-ring"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Third cell / cron table-->
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+            <div class="mdc-card my-card-content">
+                <h2 class="mdc-typography mdc-typography--headline6">Chrono Trigger</h2>
+                <div class="mdc-card__actions">
+                    <div class="mdc-data-table" style="width: 100%;">
+                        <table class="mdc-data-table__table" aria-label="Chrono Trigger">
+                            <thead>
+                            <tr class="mdc-data-table__header-row">
+                                <th class="mdc-data-table__header-cell mdc-data-table__header-cell--checkbox"
+                                    role="columnheader" scope="col">
+                                    <div class="mdc-checkbox mdc-data-table__header-row-checkbox mdc-checkbox--selected">
+                                        <input type="checkbox" class="mdc-checkbox__native-control"
+                                               aria-label="Checkbox for header row selection"/>
+                                        <div class="mdc-checkbox__background">
+                                            <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                                                <path class="mdc-checkbox__checkmark-path" fill="none"
+                                                      d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                                            </svg>
+                                            <div class="mdc-checkbox__mixedmark"></div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Status</th>
+                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Days</th>
+                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Time</th>
+                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Mode</th>
+                            </tr>
+                            </thead>
+                            <tbody class="mdc-data-table__content">
+                            <!-- added by javascript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mdc-card__actions">
+                    <div class="mdc-card__action-buttons">
+                        <button class="mdc-button mdc-card__action mdc-card__action--button mdc-button--outlined"
+                                name="delete_button" id="cron_data_delete_button">
+                            <span class="mdc-button__label">Delete</span>
+                        </button>
+                        <button class="mdc-button mdc-card__action mdc-card__action--button mdc-button--outlined"
+                                name="modify_button" id="cron_data_modify_button">
+                            <span class="mdc-button__label">Modify</span>
+                        </button>
+                    </div>
+                    <div class="mdc-card__action-buttons put-right">
+                        <button class="mdc-button mdc-card__action mdc-card__action--button mdc-button--raised"
+                                name="modify_button" id="cron_data_add_button">
+                            <i class="material-icons mdc-button__icon" aria-hidden="true">alarm_add</i>
+                            <span class="mdc-button__label">Add</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- Fourth cell / log messages-->
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+            <div class="mdc-card my-card-content">
+                <h2 class="mdc-typography mdc-typography--headline6">Log messages</h2>
+                <div class="mdc-card__actions">
+                    <ul class="mdc-list mdc-list--two-line" style="width: 100%">
+                        <!-- added by javascript -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- dialog box, cron delete confirmation -->
+<div class="mdc-dialog"
+     role="alertdialog"
+     aria-modal="true"
+     aria-labelledby="cron-dialog-title"
+     aria-describedby="cron-dialog-content"
+     id="cron-delete-dialog">
+    <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+            <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+            <h2 class="mdc-dialog__title">
+                Confirm cron entry delete
+            </h2>
+            <div class="mdc-dialog__content" id="cron-delete-dialog-content">
+                <!-- added by javascript -->
+            </div>
+            <footer class="mdc-dialog__actions">
+                <button type="button" class="mdc-button mdc-dialog__button mdc-button--raised"
+                        data-mdc-dialog-action="close">
+                    <span class="mdc-button__label">Cancel</span>
+                </button>
+                <button type="button" class="mdc-button mdc-dialog__button mdc-button--outlined"
+                        data-mdc-dialog-action="accept">
+                    <span class="mdc-button__label">OK</span>
+                </button>
+            </footer>
+        </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+</div>
+
+<!-- dialog box, add cron -->
+<div class="mdc-dialog"
+     role="alertdialog"
+     aria-modal="true"
+     aria-labelledby="cron-dialog-title"
+     aria-describedby="cron-dialog-content"
+     id="cron-add-dialog">
+    <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+            <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+            <h2 class="mdc-dialog__title">
+                Add cron entry
+            </h2>
+            <div class="mdc-dialog__content" id="cron-add-dialog-content">
+                <div class="mdc-card my-card-content" style="width: 400px;">
+                    <div class="mdc-card__actions">
+                        <h3 class="mdc-typography mdc-typography--subtitle2">Days</h3>
+                        <div class="mdc-form-field" style="width: 70%;">
+                            <div class="mdc-checkbox">
+                                <input type="checkbox"
+                                       class="mdc-checkbox__native-control"
+                                       id="mon"/>
+                                <div class="mdc-checkbox__background">
+                                    <svg class="mdc-checkbox__checkmark"
+                                         viewBox="0 0 24 24">
+                                        <path class="mdc-checkbox__checkmark-path"
+                                              fill="none"
+                                              d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                                    </svg>
+                                    <div class="mdc-checkbox__mixedmark"></div>
+                                </div>
+                            </div>
+                            <label for="mon">Mon</label>
+                            <div class="mdc-checkbox">
+                                <input type="checkbox"
+                                       class="mdc-checkbox__native-control"
+                                       id="tue"/>
+                                <div class="mdc-checkbox__background">
+                                    <svg class="mdc-checkbox__checkmark"
+                                         viewBox="0 0 24 24">
+                                        <path class="mdc-checkbox__checkmark-path"
+                                              fill="none"
+                                              d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                                    </svg>
+                                    <div class="mdc-checkbox__mixedmark"></div>
+                                </div>
+                            </div>
+                            <label for="tue">Tue</label>
+                            <div class="mdc-checkbox">
+                                <input type="checkbox"
+                                       class="mdc-checkbox__native-control"
+                                       id="wed"/>
+                                <div class="mdc-checkbox__background">
+                                    <svg class="mdc-checkbox__checkmark"
+                                         viewBox="0 0 24 24">
+                                        <path class="mdc-checkbox__checkmark-path"
+                                              fill="none"
+                                              d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                                    </svg>
+                                    <div class="mdc-checkbox__mixedmark"></div>
+                                </div>
+                            </div>
+                            <label for="wed">Wed</label>
+                            <div class="mdc-checkbox">
+                                <input type="checkbox"
+                                       class="mdc-checkbox__native-control"
+                                       id="thu"/>
+                                <div class="mdc-checkbox__background">
+                                    <svg class="mdc-checkbox__checkmark"
+                                         viewBox="0 0 24 24">
+                                        <path class="mdc-checkbox__checkmark-path"
+                                              fill="none"
+                                              d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                                    </svg>
+                                    <div class="mdc-checkbox__mixedmark"></div>
+                                </div>
+                            </div>
+                            <label for="thu">Thu</label>
+                        </div>
+                    </div>
+                    <div class="mdc-card__actions">
+                        <h3 class="mdc-typography mdc-typography--subtitle2">Power</h3>
+                        <div class="mdc-switch put-right" id="cron-add-switch" style="width: 15%;">
+                            <div class="mdc-switch__track"></div>
+                            <div class="mdc-switch__thumb-underlay">
+                                <div class="mdc-switch__thumb">
+                                    <input type="checkbox" id="add-dialog-switch" class="mdc-switch__native-control"
+                                           role="switch">
+                                </div>
+                            </div>
+                        </div>
+                        <label for="basic-switch">off/on</label>
+                    </div>
+                    <div class="mdc-card__actions">
+                        <h3 class="mdc-typography mdc-typography--subtitle2">Mode</h3>
+                        <div class="mdc-form-field put-right" style="width: 70%;">
+                            <div class="mdc-radio">
+                                <input class="mdc-radio__native-control" type="radio" id="dialog-switching" name="radio"
+                                       checked>
+                                <div class="mdc-radio__background">
+                                    <div class="mdc-radio__outer-circle"></div>
+                                    <div class="mdc-radio__inner-circle"></div>
+                                </div>
+                            </div>
+                            <label for="switching">Switching</label>
+                            <div class="mdc-radio">
+                                <input class="mdc-radio__native-control" type="radio" id="dialog-rushing" name="radio">
+                                <div class="mdc-radio__background">
+                                    <div class="mdc-radio__outer-circle"></div>
+                                    <div class="mdc-radio__inner-circle"></div>
+                                </div>
+                            </div>
+                            <label for="rushing">Rushing</label>
+                        </div>
+                    </div>
+                    <div class="mdc-card__actions">
+                        <h3 class="mdc-typography mdc-typography--subtitle2">Level</h3>
+                        <!-- TODO: replace slider with checkbox? -->
+                        <div class="mdc-slider mdc-slider--discrete put-right" id="cron-add-slider" tabindex="0"
+                             role="slider"
+                             aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" data-step="1"
+                             aria-label="Select Value" style="width: 60%;">
+                            <div class="mdc-slider__track-container">
+                                <div class="mdc-slider__track"></div>
+                            </div>
+                            <div class="mdc-slider__thumb-container">
+                                <div class="mdc-slider__pin">
+                                    <span class="mdc-slider__pin-value-marker"></span>
+                                </div>
+                                <svg class="mdc-slider__thumb" width="21" height="21">
+                                    <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                                </svg>
+                                <div class="mdc-slider__focus-ring"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="mdc-dialog__actions">
+                <button type="button" class="mdc-button mdc-dialog__button mdc-button--raised"
+                        data-mdc-dialog-action="close">
+                    <span class="mdc-button__label">Cancel</span>
+                </button>
+                <button type="button" class="mdc-button mdc-dialog__button mdc-button--outlined"
+                        data-mdc-dialog-action="accept">
+                    <span class="mdc-button__label">OK</span>
+                </button>
+            </footer>
+        </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+</div>
+<script src="seviControl.js"></script>
+</body>
+</html>

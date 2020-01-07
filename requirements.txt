@@ -1,0 +1,4 @@
+PySerial
+flask
+flask-cors
+pyserial
