@@ -16,10 +16,7 @@ class ConnectorRS485(serial.Serial):
         for i in range(0, len(msg)-1):
             chksum ^= msg[i]
 
-        if chksum == msg[-1]:
-            return True
-        else:
-            return False
+        return True if chksum == msg[-1] else False
 
     def read_msg(self):
         msg_buffer = ""
