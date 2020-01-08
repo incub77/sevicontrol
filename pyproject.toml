@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "sevicontrol"
+version = "0.0.1"
+description = "Control a Seventilation home ventilation system with a RaspberryPi."
+authors = ["incub77 <incub@gmx.net>"]
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+flask = "^1.1.1"
+flask-cors = "^3.0.8"
+PySerial = "^3.4"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
