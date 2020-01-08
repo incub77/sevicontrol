@@ -9,10 +9,10 @@ I assume you have a brand new Raspbian installed like described on
 2. Copy SeviControl to Pi  
 `cd /home`  
 `git clone https://github.com/incub77/sevicontrol.git`
-3. Install Python dependencies
+3. Install Python dependencies  
 `cd /home/sevicontrol`  
 `sudo pip3 install -r requirements.txt`
-4. Allow none priviliged users access to USB ports  
+4. Allow none priviliged users access to USB ports    
 `cd provisioning`  
 `sudo cp ./etc/udev/rules.d/50-sevicontrol-usb.rules /etc/udev/rules.d/`
 5. Register and start systemd service  
