@@ -17,10 +17,10 @@ I assume you have a brand new Raspbian installed like described on
 `sudo cp ./etc/udev/rules.d/50-sevicontrol-usb.rules /etc/udev/rules.d/`
 5. Register and start systemd service  
 `sudo cp ./etc/systemd/system/* /etc/systemd/system/`  
-`sudo systemclt enable sevi-control`
+`sudo systemctl enable sevi-control`
 6. Setup tmp files  
-`sudo cp ./etc/tmpfile.d/* /etc/tmpfiles.d/`  
+`sudo cp ./etc/tmpfiles.d/* /etc/tmpfiles.d/`  
 7. Change owner  
-`sudo chown nobody:nogroup -r /home/sevicontrol`  
+`sudo chown nobody:nogroup -R /home/sevicontrol`  
 
 
