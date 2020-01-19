@@ -1,11 +1,13 @@
+#!/usr/bin/python3
+
 import serial
 import time
 from binascii import hexlify
 
-device = "/dev/ttyAMA0"
+device = "/dev/ttyUSB1"
 baudrates = [1000]
 #baudrates = [2400, 4800, 9600, 115200, 38400, 57600, ]
-bytesizes = [(serial.EIGHTBITS, "EIGHT")]
+bytesizes = [(serial.SEVENBITS, "SEVEN")]
 #bytesizes = [(serial.EIGHTBITS, "EIGHT"), (serial.SEVENBITS, "SEVEN"), (serial.SIXBITS, "SIX"), (serial.FIVEBITS, "FIVE")]
 parities = [(serial.PARITY_NONE, "NONE")]
 #parities = [(serial.PARITY_NONE, "NONE"), (serial.PARITY_EVEN, "EVEN"), (serial.PARITY_ODD, "ODD")]
@@ -70,6 +72,7 @@ class Sniffer:
         while int(time.time() - startTime) < duration:
             if(self.usart.inWaiting()>0):
                 inBuffer.append(self.usart.read(1))
+                time.sleep(0.012)
             else:
                 if len(inBuffer) > 0:
                     log_str = self.toLogString(time.time() - startTime, inBuffer)
