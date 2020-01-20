@@ -11,7 +11,7 @@ baudrates = [1000]
 bytesizes = [(serial.EIGHTBITS, "EIGHT"), (serial.SEVENBITS, "SEVEN"), (serial.SIXBITS, "SIX"), (serial.FIVEBITS, "FIVE")]
 #parities = [(serial.PARITY_NONE, "NONE")]
 parities = [(serial.PARITY_NONE, "NONE"), (serial.PARITY_EVEN, "EVEN"), (serial.PARITY_ODD, "ODD"),
-            (serial.PARITY_MARK, "MARK"), (serial.PARITY_SPACE, "SPACE"), (serial.PARITY_NAMES, "NAMES")]
+            (serial.PARITY_MARK, "MARK"), (serial.PARITY_SPACE, "SPACE")]
 #stopbits = [(serial.STOPBITS_ONE, "ONE")]
 stopbits = [(serial.STOPBITS_ONE, "ONE"), (serial.STOPBITS_ONE_POINT_FIVE,"ONE_POINT_FIVE"), (serial.STOPBITS_TWO, "TWO")]
 xonxoff = [(True, "True"), (False, "False")]
