@@ -7,13 +7,13 @@ from binascii import hexlify
 device = "/dev/ttyUSB1"
 baudrates = [1000]
 #baudrates = [2400, 4800, 9600, 115200, 38400, 57600, ]
-bytesizes = [(serial.SEVENBITS, "SEVEN")]
-#bytesizes = [(serial.EIGHTBITS, "EIGHT"), (serial.SEVENBITS, "SEVEN"), (serial.SIXBITS, "SIX"), (serial.FIVEBITS, "FIVE")]
-parities = [(serial.PARITY_NONE, "NONE")]
-#parities = [(serial.PARITY_NONE, "NONE"), (serial.PARITY_EVEN, "EVEN"), (serial.PARITY_ODD, "ODD")]
-            #(serial.PARITY_MARK, "MARK"), (serial.PARITY_SPACE, "SPACE"), (serial.PARITY_NAMES, "NAMES")]
-stopbits = [(serial.STOPBITS_ONE, "ONE")]
-#stopbits = [(serial.STOPBITS_ONE, "ONE"), (serial.STOPBITS_ONE_POINT_FIVE,"ONE_POINT_FIVE"), (serial.STOPBITS_TWO, "TWO")]
+#bytesizes = [(serial.SEVENBITS, "SEVEN")]
+bytesizes = [(serial.EIGHTBITS, "EIGHT"), (serial.SEVENBITS, "SEVEN"), (serial.SIXBITS, "SIX"), (serial.FIVEBITS, "FIVE")]
+#parities = [(serial.PARITY_NONE, "NONE")]
+parities = [(serial.PARITY_NONE, "NONE"), (serial.PARITY_EVEN, "EVEN"), (serial.PARITY_ODD, "ODD"),
+            (serial.PARITY_MARK, "MARK"), (serial.PARITY_SPACE, "SPACE"), (serial.PARITY_NAMES, "NAMES")]
+#stopbits = [(serial.STOPBITS_ONE, "ONE")]
+stopbits = [(serial.STOPBITS_ONE, "ONE"), (serial.STOPBITS_ONE_POINT_FIVE,"ONE_POINT_FIVE"), (serial.STOPBITS_TWO, "TWO")]
 xonxoff = [(True, "True"), (False, "False")]
 rtscts = [(True, "True"), (False, "False")]
 dsrdtr = [(True, "True"), (False, "False")]
@@ -43,9 +43,22 @@ class Sniffer:
         self.out.close()
         self.usart.close()
 
-    def toLogString(self, secs, inBuffer):
+    @staticmethod
+    def verify_checksum(msg):
+        chksum = 0
+        for i in range(0, len(msg) - 1):
+            chksum ^= msg[i]
+
+        return True if chksum == msg[-1] else False
+
+    @staticmethod
+    def toLogString(self, secs, inBuffer, chksum_ok):
         log_str = "%06.3f" % (secs)
         log_str += " : "
+        if chksum_ok:
+            log_str += "OK : "
+        else:
+            log_str += "NOT : "
         bin_str = ""
         byte_count = 0
         for byte in inBuffer:
@@ -68,17 +81,22 @@ class Sniffer:
 
     def sniff(self, duration):
         startTime = time.time()
-        inBuffer = []
+        chksum_nok_cnt = 0
         while int(time.time() - startTime) < duration:
-            if(self.usart.inWaiting()>0):
-                inBuffer.append(self.usart.read(1))
-                time.sleep(0.012)
-            else:
-                if len(inBuffer) > 0:
-                    log_str = self.toLogString(time.time() - startTime, inBuffer)
-                    print(log_str)
-                    self.out.write(log_str + "\r\n")
-                    inBuffer = []
+            inBuffer = []
+            while self.usart.inWaiting() > 0:
+                inBuffer += hexlify(self.read(1)).decode('utf-8')
+                time.sleep(round((1 / self.baudrate) * 12, 8))
+
+            if len(inBuffer) > 0:
+                chksum_ok = self.verify_checksum(bytes.fromhex(inBuffer))
+                if not chksum_ok:
+                    chksum_nok_cnt += 1
+                log_str = self.toLogString(time.time() - startTime, inBuffer, chksum_ok)
+                print(log_str)
+                self.out.write(log_str + "\r\n")
+                if chksum_nok_cnt >= 5:
+                    return
 
 for baudrate in baudrates:
     for bytesize in bytesizes:
