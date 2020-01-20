@@ -85,7 +85,7 @@ class Sniffer:
         while int(time.time() - startTime) < duration:
             inBuffer = []
             while self.usart.inWaiting() > 0:
-                inBuffer += hexlify(self.read(1)).decode('utf-8')
+                inBuffer += hexlify(self.usart.read(1)).decode('utf-8')
                 time.sleep(round((1 / self.baudrate) * 12, 8))
 
             if len(inBuffer) > 0:
