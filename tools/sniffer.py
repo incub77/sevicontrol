@@ -4,16 +4,18 @@ import serial
 import time
 from binascii import hexlify
 
-device = "/dev/ttyUSB1"
+device = "/dev/ttyUSB0"
+#device = "/dev/ttyUSB1"
+#device = "/dev/ttyAMA0"
 baudrates = [1000]
 #baudrates = [2400, 4800, 9600, 115200, 38400, 57600, ]
-#bytesizes = [(serial.SEVENBITS, "SEVEN")]
-bytesizes = [(serial.EIGHTBITS, "EIGHT"), (serial.SEVENBITS, "SEVEN"), (serial.SIXBITS, "SIX"), (serial.FIVEBITS, "FIVE")]
-#parities = [(serial.PARITY_NONE, "NONE")]
-parities = [(serial.PARITY_NONE, "NONE"), (serial.PARITY_EVEN, "EVEN"), (serial.PARITY_ODD, "ODD"),
-            (serial.PARITY_MARK, "MARK"), (serial.PARITY_SPACE, "SPACE")]
-#stopbits = [(serial.STOPBITS_ONE, "ONE")]
-stopbits = [(serial.STOPBITS_ONE, "ONE"), (serial.STOPBITS_ONE_POINT_FIVE,"ONE_POINT_FIVE"), (serial.STOPBITS_TWO, "TWO")]
+bytesizes = [(serial.EIGHTBITS, "EIGHT")]
+#bytesizes = [(serial.EIGHTBITS, "EIGHT"), (serial.SEVENBITS, "SEVEN"), (serial.SIXBITS, "SIX"), (serial.FIVEBITS, "FIVE")]
+parities = [(serial.PARITY_NONE, "NONE")]
+#parities = [(serial.PARITY_NONE, "NONE"), (serial.PARITY_EVEN, "EVEN"), (serial.PARITY_ODD, "ODD"),
+#            (serial.PARITY_MARK, "MARK"), (serial.PARITY_SPACE, "SPACE")]
+stopbits = [(serial.STOPBITS_ONE, "ONE")]
+#stopbits = [(serial.STOPBITS_ONE, "ONE"), (serial.STOPBITS_ONE_POINT_FIVE,"ONE_POINT_FIVE"), (serial.STOPBITS_TWO, "TWO")]
 xonxoff = [(True, "True"), (False, "False")]
 rtscts = [(True, "True"), (False, "False")]
 dsrdtr = [(True, "True"), (False, "False")]
