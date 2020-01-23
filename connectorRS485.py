@@ -6,7 +6,8 @@ import logging
 
 class ConnectorRS485(serial.Serial):
     def __init__(self, device, baud=1000):
-        super().__init__(port=device, baudrate=baud, stopbits=serial.STOPBITS_ONE, parity=serial.PARITY_NONE)
+        super().__init__(port=device, baudrate=baud, stopbits=serial.STOPBITS_ONE, parity=serial.PARITY_NONE,
+                         bytesize=serial.SEVENBITS)
         self.log = logging.getLogger("connector-"+device.split('/')[-1])
         self.log.setLevel(logging.DEBUG)
 
