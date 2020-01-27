@@ -233,6 +233,26 @@ def status():
         mimetype='application/json'
     )
 
+@app.route("/panelStatus")
+def panel_status():
+    resp = {"not recognized yet"}
+    mode = panel_status_thread.last_detected_mode
+    if mode:
+        if mode.name.startswith("W"):
+            resp = "Switching "
+            resp += mode.name[-1]
+        elif mode.name.startswith("S"):
+            resp = "Rushing "
+            resp += mode.name[-1]
+        else:
+            resp = mode.name
+
+    return app.response_class(
+        response=json.dumps(resp, indent=2),
+        status=200,
+        mimetype='application/json'
+    )
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0")
