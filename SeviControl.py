@@ -235,7 +235,7 @@ def status():
 
 @app.route("/panelStatus")
 def panel_status():
-    resp = {"not recognized yet"}
+    resp = "not recognized yet"
     mode = panel_status_thread.last_detected_mode
     if mode:
         if mode.name.startswith("W"):
