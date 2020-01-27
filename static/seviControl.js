@@ -61,7 +61,7 @@ function updateStatusBox() {
     fetch(`${reqURL}/panelStatus`)
         .then(res => res.json())
         .then((out) => {
-            document.getElementById("panel_status").innerHTML = out;
+            document.getElementById("panel_text").innerHTML = out;
         })
         .catch(error => console.error(error));
 }
