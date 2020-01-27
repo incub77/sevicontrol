@@ -4,16 +4,18 @@ import serial
 import time
 from binascii import hexlify
 
-device = "/dev/ttyUSB1"
+device = "/dev/ttyUSB0"
+#device = "/dev/ttyUSB1"
+#device = "/dev/ttyAMA0"
 baudrates = [1000]
 #baudrates = [2400, 4800, 9600, 115200, 38400, 57600, ]
-#bytesizes = [(serial.SEVENBITS, "SEVEN")]
-bytesizes = [(serial.EIGHTBITS, "EIGHT"), (serial.SEVENBITS, "SEVEN"), (serial.SIXBITS, "SIX"), (serial.FIVEBITS, "FIVE")]
-#parities = [(serial.PARITY_NONE, "NONE")]
-parities = [(serial.PARITY_NONE, "NONE"), (serial.PARITY_EVEN, "EVEN"), (serial.PARITY_ODD, "ODD"),
-            (serial.PARITY_MARK, "MARK"), (serial.PARITY_SPACE, "SPACE"), (serial.PARITY_NAMES, "NAMES")]
-#stopbits = [(serial.STOPBITS_ONE, "ONE")]
-stopbits = [(serial.STOPBITS_ONE, "ONE"), (serial.STOPBITS_ONE_POINT_FIVE,"ONE_POINT_FIVE"), (serial.STOPBITS_TWO, "TWO")]
+bytesizes = [(serial.EIGHTBITS, "EIGHT")]
+#bytesizes = [(serial.EIGHTBITS, "EIGHT"), (serial.SEVENBITS, "SEVEN"), (serial.SIXBITS, "SIX"), (serial.FIVEBITS, "FIVE")]
+parities = [(serial.PARITY_NONE, "NONE")]
+#parities = [(serial.PARITY_NONE, "NONE"), (serial.PARITY_EVEN, "EVEN"), (serial.PARITY_ODD, "ODD"),
+#            (serial.PARITY_MARK, "MARK"), (serial.PARITY_SPACE, "SPACE")]
+stopbits = [(serial.STOPBITS_ONE, "ONE")]
+#stopbits = [(serial.STOPBITS_ONE, "ONE"), (serial.STOPBITS_ONE_POINT_FIVE,"ONE_POINT_FIVE"), (serial.STOPBITS_TWO, "TWO")]
 xonxoff = [(True, "True"), (False, "False")]
 rtscts = [(True, "True"), (False, "False")]
 dsrdtr = [(True, "True"), (False, "False")]
@@ -30,6 +32,7 @@ class Sniffer:
                                    #xonxoff= xonxoff[0],
                                    #rtscts= rtscts[0],
                                    #dsrdtr= dsrdtr[0])
+        self.baudrate = baud
         self.usart.flushInput()
         self.out = open("llog_%s_%s_%s.log" % (str(baud), bytesize[1], str(logSep)), "w")
         self.out.write("Baudrate: "+str(baud)+"\r\n")
@@ -52,19 +55,18 @@ class Sniffer:
         return True if chksum == msg[-1] else False
 
     @staticmethod
-    def toLogString(self, secs, inBuffer, chksum_ok):
+    def toLogString(secs, inBuffer, chksum_ok):
         log_str = "%06.3f" % (secs)
         log_str += " : "
         if chksum_ok:
             log_str += "OK : "
         else:
-            log_str += "NOT : "
+            log_str += "NOK : "
         bin_str = ""
         byte_count = 0
         for byte in inBuffer:
-            hex_str = hexlify(byte).decode('utf-8')
-            log_str += hex_str
-            tmp_bin = bin(int(hex_str, base=16))[2:].zfill(8)
+            log_str += byte
+            tmp_bin = bin(int(byte, base=16))[2:].zfill(8)
             #bin_str += tmp_bin
             bin_str += "%s %s " % (tmp_bin[:4], tmp_bin[4:])
             byte_count += 1
@@ -89,7 +91,7 @@ class Sniffer:
                 time.sleep(round((1 / self.baudrate) * 12, 8))
 
             if len(inBuffer) > 0:
-                chksum_ok = self.verify_checksum(bytes.fromhex(inBuffer))
+                chksum_ok = self.verify_checksum(bytes.fromhex(''.join(inBuffer)))
                 if not chksum_ok:
                     chksum_nok_cnt += 1
                 log_str = self.toLogString(time.time() - startTime, inBuffer, chksum_ok)
@@ -113,7 +115,7 @@ for baudrate in baudrates:
                                 bytesize=bytesize, parity=parity,
                                 stopbits=stopbit,
                                 logSep=logSep)
-                sn.sniff(180)
+                sn.sniff(120)
                 sn = None
 
 
