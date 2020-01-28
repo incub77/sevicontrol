@@ -279,7 +279,7 @@ def set_pause():
                             int(request.args[key])/60/60,
                             get_hostname_by_addr(request.environ['HTTP_X_FORWARDED_FOR']),
                             request.environ['HTTP_X_FORWARDED_FOR'])
-            pause_thread.pause(request.args[key])
+            pause_thread.pause(int(request.args[key]))
     return "Ok", 200
 
 
