@@ -260,3 +260,23 @@ const slider = new MDCSlider(document.getElementById("control-level-slider"));
 slider.listen('MDCSlider:change', function () {
     level(slider.value)
 });
+
+// Handle sleep buttons
+const sleep1hButton = document.getElementById("sleep_1h_button");
+sleep1hButton.addEventListener("click", function() {
+    fetch(`${reqURL}/setPause?duration=3600`)
+            .catch(error => console.error(error));
+});
+
+const sleep2hButton = document.getElementById("sleep_1h_button");
+sleep2hButton.addEventListener("click", function() {
+    fetch(`${reqURL}/setPause?duration=7200`)
+            .catch(error => console.error(error));
+});
+
+const sleep4hButton = document.getElementById("sleep_1h_button");
+sleep4hButton.addEventListener("click", function() {
+    fetch(`${reqURL}/setPause?duration=14400`)
+            .catch(error => console.error(error));
+});
+
