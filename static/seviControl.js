@@ -61,7 +61,7 @@ function updateStatusBox() {
     fetch(`${reqURL}/getPause`)
         .then(res => res.json())
         .then((out) => {
-            document.getElementById("pause_text").innerHTML = out;
+            document.getElementById("sleeping_text").innerHTML = out;
         })
         .catch(error => console.error(error));
     fetch(`${reqURL}/panelStatus`)
