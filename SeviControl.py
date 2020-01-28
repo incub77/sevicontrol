@@ -6,7 +6,7 @@ import sys
 import socket
 import yaml
 from queue import Queue
-from time import sleep
+from time import sleep, strftime, localtime
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -257,8 +257,20 @@ def panel_status():
         mimetype='application/json'
     )
 
-@app.route("/pause")
-def pause():
+@app.route("/getPause")
+def get_pause():
+    resp = "-"
+    wakeup_time = pause_thread.wakeup_time
+    if wakeup_time:
+        resp = strftime("%H:%M", localtime(wakeup_time))
+    return app.response_class(
+        response=json.dumps(resp, indent=2),
+        status=200,
+        mimetype='application/json'
+    )
+
+@app.route("/setPause")
+def set_pause():
     for key in request.args.keys():
         if key not in ["duration"]:
             return "Invalid parameter: "+key, 400
