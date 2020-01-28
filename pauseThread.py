@@ -25,9 +25,10 @@ class PauseThread(Thread):
             self.log.critical("Command queue full")
 
     def reset(self):
-        self.log.info("Resetting sleep timer due user input")
-        with self.lock:
-            self.wakeup_time = None
+        if self.wakeup_time:
+            self.log.info("Resetting sleep timer due user input")
+            with self.lock:
+                self.wakeup_time = None
 
     def run(self) -> None:
         while 1:
