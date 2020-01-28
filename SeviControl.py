@@ -15,6 +15,7 @@ from commands import Commands
 from connectorRS485 import ConnectorRS485
 from connectorThread import ConnectorThread
 from controlThread import ControlThread
+from pauseThread import PauseThread
 from cronCommands import CronCommands
 from panelStatus import PanelStatus
 from inMemoryLogHandler import InMemoryLogHandler
@@ -59,6 +60,9 @@ panel_status_thread.start()
 
 cron_thread = CronCommands(cmd_queue)
 cron_thread.start()
+
+pause_thread = PauseThread(cmd_queue)
+pause_thread.start()
 
 
 def put_out_queue(msg_list):
@@ -252,6 +256,20 @@ def panel_status():
         status=200,
         mimetype='application/json'
     )
+
+@app.route("/pause")
+def pause():
+    for key in request.args.keys():
+        if key not in ["duration"]:
+            return "Invalid parameter: "+key, 400
+        else:
+            app.logger.info("Request for %ih pause from '%s' (IP: %s) ",
+                            int(request.args[key])/60/60,
+                            get_hostname_by_addr(request.environ['HTTP_X_FORWARDED_FOR']),
+                            request.environ['HTTP_X_FORWARDED_FOR'])
+            pause_thread.sleep(request.args[key])
+    return "Ok", 200
+
 
 
 if __name__ == '__main__':
