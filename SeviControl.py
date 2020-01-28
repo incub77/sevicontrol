@@ -139,6 +139,7 @@ def set_level():
                                 get_hostname_by_addr(request.environ['HTTP_X_FORWARDED_FOR']),
                                 request.environ['HTTP_X_FORWARDED_FOR'])
                 cmd_queue.put(Modes[mode_name[:1]+key])
+                pause_thread.reset()
     return "Ok", 200
 
 
@@ -155,6 +156,7 @@ def set_mode():
                                 get_hostname_by_addr(request.environ['HTTP_X_FORWARDED_FOR']),
                                 request.environ['HTTP_X_FORWARDED_FOR'])
                 cmd_queue.put(Modes[key+mode_name[1:]])
+                pause_thread.reset()
     return "Ok", 200
 
 
@@ -169,6 +171,7 @@ def set_all():
                             get_hostname_by_addr(request.environ['HTTP_X_FORWARDED_FOR']),
                             request.environ['HTTP_X_FORWARDED_FOR'])
             cmd_queue.put(Modes[key])
+            pause_thread.reset()
     return "Ok", 200
 
 
