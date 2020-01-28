@@ -58,6 +58,12 @@ function updateStatusBox() {
             document.getElementById("level_text").innerHTML = out["level"];
         })
         .catch(error => console.error(error));
+    fetch(`${reqURL}/panelStatus`)
+        .then(res => res.json())
+        .then((out) => {
+            document.getElementById("panel_text").innerHTML = out;
+        })
+        .catch(error => console.error(error));
 }
 
 updateStatusBox();
