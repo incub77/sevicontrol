@@ -1,4 +1,6 @@
 panel:
   device: /dev/ttyUSB0
+  baudrate: 1000
 controller:
   device: /dev/ttyUSB1
+  baudrate: 1000

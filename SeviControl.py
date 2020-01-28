@@ -41,8 +41,8 @@ panel_in = Queue()
 panel_out = Queue()
 raw_bypass_queue = Queue()
 
-logic_board_cnx = ConnectorRS485(device=cfg["controller"]["device"])
-panel_cnx = ConnectorRS485(device=cfg["panel"]["device"])
+logic_board_cnx = ConnectorRS485(device=cfg['controller']['device'], baudrate=cfg['controller']['baudrate'])
+panel_cnx = ConnectorRS485(device=cfg['panel']['device'], baudrate=cfg['panel']['baudrate'])
 
 # TODO: logic_bord_in is ignored... we should listen to any msgs that could appear
 logic_board_thread = ConnectorThread(logic_board_cnx, logic_board_in, logic_board_out)
