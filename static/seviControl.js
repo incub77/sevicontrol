@@ -266,17 +266,20 @@ const sleep1hButton = document.getElementById("sleep_1h_button");
 sleep1hButton.addEventListener("click", function() {
     fetch(`${reqURL}/setPause?duration=3600`)
             .catch(error => console.error(error));
+    updateStatusBox();
 });
 
 const sleep2hButton = document.getElementById("sleep_2h_button");
 sleep2hButton.addEventListener("click", function() {
     fetch(`${reqURL}/setPause?duration=7200`)
             .catch(error => console.error(error));
+    updateStatusBox();
 });
 
 const sleep4hButton = document.getElementById("sleep_4h_button");
 sleep4hButton.addEventListener("click", function() {
     fetch(`${reqURL}/setPause?duration=14400`)
             .catch(error => console.error(error));
+    updateStatusBox();
 });
 
