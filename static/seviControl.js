@@ -58,7 +58,7 @@ function updateStatusBox() {
             document.getElementById("level_text").innerHTML = out["level"];
         })
         .catch(error => console.error(error));
-    fetch(`${reqURL}/getPause`)
+    fetch(`${reqURL}/getSleep`)
         .then(res => res.json())
         .then((out) => {
             document.getElementById("sleeping_text").innerHTML = out;
@@ -264,21 +264,21 @@ slider.listen('MDCSlider:change', function () {
 // Handle sleep buttons
 const sleep1hButton = document.getElementById("sleep_1h_button");
 sleep1hButton.addEventListener("click", function() {
-    fetch(`${reqURL}/setPause?duration=3600`)
+    fetch(`${reqURL}/setSleep?duration=3600`)
             .catch(error => console.error(error));
     updateStatusBox();
 });
 
 const sleep2hButton = document.getElementById("sleep_2h_button");
 sleep2hButton.addEventListener("click", function() {
-    fetch(`${reqURL}/setPause?duration=7200`)
+    fetch(`${reqURL}/setSleep?duration=7200`)
             .catch(error => console.error(error));
     updateStatusBox();
 });
 
 const sleep4hButton = document.getElementById("sleep_4h_button");
 sleep4hButton.addEventListener("click", function() {
-    fetch(`${reqURL}/setPause?duration=14400`)
+    fetch(`${reqURL}/setSleep?duration=14400`)
             .catch(error => console.error(error));
     updateStatusBox();
 });

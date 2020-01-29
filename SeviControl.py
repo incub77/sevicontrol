@@ -15,7 +15,7 @@ from commands import Commands
 from connectorRS485 import ConnectorRS485
 from connectorThread import ConnectorThread
 from controlThread import ControlThread
-from pauseThread import PauseThread
+from sleepThread import SleepThread
 from cronCommands import CronCommands
 from panelStatus import PanelStatus
 from inMemoryLogHandler import InMemoryLogHandler
@@ -61,8 +61,8 @@ panel_status_thread.start()
 cron_thread = CronCommands(cmd_queue)
 cron_thread.start()
 
-pause_thread = PauseThread(cmd_queue)
-pause_thread.start()
+sleep_thread = SleepThread(cmd_queue)
+sleep_thread.start()
 
 
 def put_out_queue(msg_list):
@@ -139,7 +139,7 @@ def set_level():
                                 get_hostname_by_addr(request.environ['HTTP_X_FORWARDED_FOR']),
                                 request.environ['HTTP_X_FORWARDED_FOR'])
                 cmd_queue.put(Modes[mode_name[:1]+key])
-                pause_thread.reset()
+                sleep_thread.reset()
     return "Ok", 200
 
 
@@ -156,7 +156,7 @@ def set_mode():
                                 get_hostname_by_addr(request.environ['HTTP_X_FORWARDED_FOR']),
                                 request.environ['HTTP_X_FORWARDED_FOR'])
                 cmd_queue.put(Modes[key+mode_name[1:]])
-                pause_thread.reset()
+                sleep_thread.reset()
     return "Ok", 200
 
 
@@ -171,7 +171,7 @@ def set_all():
                             get_hostname_by_addr(request.environ['HTTP_X_FORWARDED_FOR']),
                             request.environ['HTTP_X_FORWARDED_FOR'])
             cmd_queue.put(Modes[key])
-            pause_thread.reset()
+            sleep_thread.reset()
     return "Ok", 200
 
 
@@ -260,10 +260,10 @@ def panel_status():
         mimetype='application/json'
     )
 
-@app.route("/getPause")
-def get_pause():
+@app.route("/getSleep")
+def get_sleep():
     resp = "-"
-    wakeup_time = pause_thread.wakeup_time
+    wakeup_time = sleep_thread.wakeup_time
     if wakeup_time:
         resp = strftime("%H:%M", localtime(wakeup_time))
     return app.response_class(
@@ -272,17 +272,17 @@ def get_pause():
         mimetype='application/json'
     )
 
-@app.route("/setPause")
-def set_pause():
+@app.route("/setSleep")
+def set_sleep():
     for key in request.args.keys():
         if key not in ["duration"]:
             return "Invalid parameter: "+key, 400
         else:
-            app.logger.info("Request for %ih pause from '%s' (IP: %s) ",
+            app.logger.info("Request for %ih sleep from '%s' (IP: %s) ",
                             int(request.args[key])/60/60,
                             get_hostname_by_addr(request.environ['HTTP_X_FORWARDED_FOR']),
                             request.environ['HTTP_X_FORWARDED_FOR'])
-            pause_thread.pause(int(request.args[key]))
+            sleep_thread.sleep(int(request.args[key]))
     return "Ok", 200
 
 

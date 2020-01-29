@@ -6,7 +6,7 @@ import logging
 
 
 
-class PauseThread(Thread):
+class SleepThread(Thread):
     def __init__(self, cmd_queue):
         super().__init__(daemon=True)
         self.cmd_queue = cmd_queue
@@ -15,7 +15,7 @@ class PauseThread(Thread):
         self.log = logging.getLogger("Pause")
         self.log.setLevel(logging.DEBUG)
 
-    def pause(self, duration):
+    def sleep(self, duration):
         self.log.info("Going to sleep till %s" % time.strftime("%H:%M", time.localtime(time.time() + duration)))
         with self.lock:
             self.wakeup_time = time.time() + duration
@@ -26,7 +26,7 @@ class PauseThread(Thread):
 
     def reset(self):
         if self.wakeup_time:
-            self.log.info("Resetting sleep timer due user input")
+            self.log.info("Cancelling sleep timer due to user input")
             with self.lock:
                 self.wakeup_time = None
 
