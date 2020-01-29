@@ -28,8 +28,10 @@ I assume you have a brand new Raspbian installed like described on
 6. Setup tmp files  
 `sudo cp ./etc/tmpfiles.d/* /etc/tmpfiles.d/`  
 7. Change owner  
-`sudo chown nobody:nogroup -R /home/sevicontrol`  
-8. Restart  
+`sudo chown nobody:nogroup -R /home/sevicontrol`
+8. Edit config.yaml to match your settings  
+`sudo vi config.yaml`  
+9. Restart  
 `sudo shutdown -r now`
 
 
