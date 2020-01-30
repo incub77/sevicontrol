@@ -16,7 +16,7 @@ class ConnectorThread(Thread):
     def run(self):
         send = 0
         while 1:
-            # We need to sleep a bit, otherwise SEVI controler doesn't have enough time to process msgs
+            # We need to sleep a bit, otherwise SEVI controller doesn't have enough time to process msgs
             # (prevent DOS attack :-)). Send every 4th loop.
             sleep(0.05)
             send += 1

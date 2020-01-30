@@ -16,6 +16,7 @@ from controlThread import ControlThread
 from sleepThread import SleepThread
 from cronCommands import CronCommands
 from panelStatus import PanelStatus
+from fanout import Fanout
 from inMemoryLogHandler import InMemoryLogHandler
 from modes import Modes
 
@@ -42,19 +43,26 @@ cmd_queue = Queue()
 panel_in = Queue()
 panel_out = Queue()
 raw_bypass_queue = Queue()
+cmd_to_control_queue = Queue()
 
 # wire threads and queues
-logic_board_cnx = ConnectorRS485(device=cfg['controller']['device'], baudrate=cfg['controller']['baudrate'])
-panel_cnx = ConnectorRS485(device=cfg['panel']['device'], baudrate=cfg['panel']['baudrate'])
-
 # TODO: logic_bord_in is ignored... we should listen to any msgs that could appear
-logic_board_thread = ConnectorThread(logic_board_cnx, logic_board_in, logic_board_out)
+logic_board_thread = ConnectorThread(
+    ConnectorRS485(device=cfg['controller']['device'], baudrate=cfg['controller']['baudrate']),
+    logic_board_in,
+    logic_board_out)
 logic_board_thread.start()
 
-panel_thread = ConnectorThread(panel_cnx, panel_in, panel_out)
+panel_thread = ConnectorThread(
+    ConnectorRS485(device=cfg['panel']['device'], baudrate=cfg['panel']['baudrate']),
+    panel_in,
+    panel_out)
 panel_thread.start()
 
-ctl_thread = ControlThread(logic_board_out, raw_bypass_queue, cmd_queue)
+fanout_thread = Fanout(cmd_queue, [cmd_to_control_queue])
+fanout_thread.start()
+
+ctl_thread = ControlThread(logic_board_out, raw_bypass_queue, cmd_to_control_queue)
 ctl_thread.start()
 
 panel_status_thread = PanelStatus(panel_in, cmd_queue, raw_bypass_queue)
