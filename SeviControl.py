@@ -19,6 +19,12 @@ from panelStatus import PanelStatus
 from inMemoryLogHandler import InMemoryLogHandler
 from modes import Modes
 
+# open configuration file
+cfg = ...
+with open('config.yaml') as yamlfile:
+    cfg = yaml.load(yamlfile)
+
+# setup logging
 inMemoryHandler = InMemoryLogHandler(logging.INFO)
 inMemoryHandler.setFormatter(logging.Formatter('%(levelname)s @ %(asctime)s-:-%(name)s: %(message)s'))
 rotatingFileHandler = logging.handlers.RotatingFileHandler("seviControl.log", maxBytes=1024*1024*10, backupCount=5)
@@ -29,10 +35,7 @@ logger = logging.getLogger("")
 logger.addHandler(inMemoryHandler)
 logger.addHandler(rotatingFileHandler)
 
-cfg = ...
-with open('config.yaml') as yamlfile:
-    cfg = yaml.load(yamlfile)
-
+# create queues for thread communication
 logic_board_in = Queue()
 logic_board_out = Queue()
 cmd_queue = Queue()
@@ -40,6 +43,7 @@ panel_in = Queue()
 panel_out = Queue()
 raw_bypass_queue = Queue()
 
+# wire threads and queues
 logic_board_cnx = ConnectorRS485(device=cfg['controller']['device'], baudrate=cfg['controller']['baudrate'])
 panel_cnx = ConnectorRS485(device=cfg['panel']['device'], baudrate=cfg['panel']['baudrate'])
 
@@ -62,7 +66,7 @@ cron_thread.start()
 sleep_thread = SleepThread(cmd_queue)
 sleep_thread.start()
 
-
+# webservice / flask
 app = Flask("SeviControl")
 app.logger.setLevel(logging.DEBUG)
 CORS(app)
