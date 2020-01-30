@@ -2,16 +2,14 @@
 
 import json
 import logging.handlers
-import sys
 import socket
 import yaml
 from queue import Queue
-from time import sleep, strftime, localtime
+from time import strftime, localtime
 
 from flask import Flask, request
 from flask_cors import CORS
 
-from commands import Commands
 from connectorRS485 import ConnectorRS485
 from connectorThread import ConnectorThread
 from controlThread import ControlThread
@@ -65,55 +63,6 @@ sleep_thread = SleepThread(cmd_queue)
 sleep_thread.start()
 
 
-def put_out_queue(msg_list):
-    for msg in msg_list:
-        logic_board_out.put(msg)
-
-
-def console_mode():
-    while 1:
-        sleep(0.5)
-        print("Modes: on, off, w1, w2, w3, w4, s1, s2, s3, s4, r, q")
-        mode = input("Select mode: ")
-        if mode == "on":
-            put_out_queue(Commands.ON)
-        elif mode == "off":
-            put_out_queue(Commands.OFF)
-        elif mode == "w1":
-            cmd_queue.put(Modes.W1)
-        elif mode == "w2":
-            cmd_queue.put(Modes.W2)
-        elif mode == "w3":
-            cmd_queue.put(Modes.W3)
-        elif mode == "w4":
-            cmd_queue.put(Modes.W4)
-        elif mode == "s1":
-            cmd_queue.put(Modes.S1)
-        elif mode == "s2":
-            cmd_queue.put(Modes.S2)
-        elif mode == "s3":
-            cmd_queue.put(Modes.S3)
-        elif mode == "s4":
-            cmd_queue.put(Modes.S4)
-        elif mode == "r":
-            if not logic_board_in.empty():
-                print(logic_board_in.get())
-        elif mode == "q":
-            import sys
-            sys.exit()
-        else:
-            print("Unsupported mode...")
-
-
-if len(sys.argv) > 1:
-    if sys.argv[1] == "-a":
-        put_out_queue(Commands.ON)
-        cmd_queue.put(Modes.W1)
-        while 1:
-            sleep(0.5)
-    elif sys.argv[1] == "-c":
-        console_mode()
-
 app = Flask("SeviControl")
 app.logger.setLevel(logging.DEBUG)
 CORS(app)
@@ -142,7 +91,6 @@ def set_level():
                 sleep_thread.reset()
     return "Ok", 200
 
-
 @app.route("/setMode")
 def set_mode():
     for key in request.args.keys():
@@ -159,7 +107,6 @@ def set_mode():
                 sleep_thread.reset()
     return "Ok", 200
 
-
 @app.route("/set")
 def set_all():
     for key in request.args.keys():
@@ -173,7 +120,6 @@ def set_all():
             cmd_queue.put(Modes[key])
             sleep_thread.reset()
     return "Ok", 200
-
 
 @app.route("/cronData")
 def get_cron_data():
@@ -199,8 +145,6 @@ def del_cron_data():
             cron_thread.del_cron_data(request.args[key].split(','))
     return "Ok", 200
 
-
-
 @app.route("/logs")
 def get_logs():
     logs = inMemoryHandler.get_logs()[::-1]
@@ -211,28 +155,17 @@ def get_logs():
         mimetype='application/json'
     )
 
-
 @app.route("/status")
 def status():
     resp = {"power": "Off", "mode": "-", "level": "-"}
     mode = ctl_thread.current_mode
-    mode_name = mode.name
     if mode != Modes["OFF"]:
-        if mode_name.startswith("W"):
-            resp["power"] = "On"
+        resp["power"] = "On"
+        if mode.name.startswith("W"):
             resp["mode"] = "Switching"
-        elif mode_name.startswith("S"):
-            resp["power"] = "On"
+        elif mode.name.startswith("S"):
             resp["mode"] = "Rushing"
-
-        if mode_name.endswith("1"):
-            resp["level"] = "1"
-        elif mode_name.endswith("2"):
-            resp["level"] = "2"
-        elif mode_name.endswith("3"):
-            resp["level"] = "3"
-        elif mode_name.endswith("4"):
-            resp["level"] = "4"
+        resp['level'] = mode.name[-1]
 
     return app.response_class(
         response=json.dumps(resp, indent=2),
