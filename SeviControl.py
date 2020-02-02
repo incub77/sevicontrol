@@ -12,6 +12,7 @@ from flask_cors import CORS
 
 from connectorRS485 import ConnectorRS485
 from connectorThread import ConnectorThread
+from connectorFactory import ConnectorFactory
 from controlThread import ControlThread
 from sleepThread import SleepThread
 from cronCommands import CronCommands
@@ -48,13 +49,13 @@ cmd_to_control_queue = Queue()
 # wire threads and queues
 # TODO: logic_bord_in is ignored... we should listen to any msgs that could appear
 logic_board_thread = ConnectorThread(
-    ConnectorRS485(device=cfg['controller']['device'], baudrate=cfg['controller']['baudrate']),
+    ConnectorFactory(device=cfg['controller']['device'], baudrate=cfg['controller']['baudrate']),
     logic_board_in,
     logic_board_out)
 logic_board_thread.start()
 
 panel_thread = ConnectorThread(
-    ConnectorRS485(device=cfg['panel']['device'], baudrate=cfg['panel']['baudrate']),
+    ConnectorFactory(device=cfg['panel']['device'], baudrate=cfg['panel']['baudrate']),
     panel_in,
     panel_out)
 panel_thread.start()
