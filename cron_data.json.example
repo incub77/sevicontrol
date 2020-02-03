@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1",
+    "status": "active",
+    "days": [
+      "Mon-Fri"
+    ],
+    "hour": "08",
+    "minute": "00",
+    "mode": "W4"
+  },
+  {
+    "id": "2",
+    "status": "active",
+    "days": [
+      "Mon-Fri"
+    ],
+    "hour": "14",
+    "minute": "00",
+    "mode": "W1"
+  }
+]
