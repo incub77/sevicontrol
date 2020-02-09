@@ -5,6 +5,7 @@ const {MDCFormField} = mdc.formField;
 const {MDCRadio} = mdc.radio;
 const {MDCDataTable} = mdc.dataTable;
 const {MDCDialog} = mdc.dialog;
+const {MDCTopAppBar} = mdc.topAppBar;
 
 const reqURL = document.location.href.slice(0, -1);
 
@@ -19,6 +20,15 @@ function CreateUUID() {
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   )
 }
+
+// TopBar
+const topAppBarElement = document.querySelector('.mdc-top-app-bar');
+const topAppBar = new MDCTopAppBar(topAppBarElement);
+
+const refreshButton = document.getElementById("button_refresh");
+refreshButton.addEventListener("click", function() {
+    document.location.reload();
+});
 
 // Update status box
 function updateStatusBox() {
