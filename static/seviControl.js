@@ -21,9 +21,6 @@ function CreateUUID() {
   )
 }
 
-// TopBar
-const topAppBarElement = document.querySelector('.mdc-top-app-bar');
-const topAppBar = new MDCTopAppBar(topAppBarElement);
 
 const refreshButton = document.getElementById("button_refresh");
 refreshButton.addEventListener("click", function() {
