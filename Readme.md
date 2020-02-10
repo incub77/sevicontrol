@@ -62,15 +62,19 @@ I assume you have a brand new Raspbian installed like described on
 5. Copy nginx config  
 `sudo cp ./etc/nginx/nginx.conf /etc/nginx/`  
 6. Setup tmp files  
-`sudo cp ./etc/tmpfiles.d/* /etc/tmpfiles.d/`  
-7. Change owner  
-`sudo chown nobody:nogroup -R /home/sevicontrol`
-8. Register systemd services  
+`sudo cp ./etc/tmpfiles.d/* /etc/tmpfiles.d/`
+7. Register systemd services  
 `sudo cp ./etc/systemd/system/* /etc/systemd/system/`  
 `sudo systemctl enable sevi-control`
-9. Edit config.yaml to match your settings  
+8. Edit config.yaml to match your settings  
+`sudo cp config.yaml.example config.yaml`  
 `sudo vi config.yaml`  
-10. Restart  
+9. Create system user & group  
+`sudo addgroup --system sevictl`  
+`sudo adduser --system --home /home/sevicontrol/ --no-create-home --ingroup sevictl sevictl`  
+10. Change owner  
+`sudo chown sevictl:sevictl -R /home/sevicontrol`
+11. Restart  
 `sudo shutdown -r now`
 
 

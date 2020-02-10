@@ -5,8 +5,8 @@ After=network.target
 
 [Service]
 PIDFile=/run/sevi-control/pid
-User=nobody
-Group=nogroup
+User=sevictl
+Group=sevictl
 RuntimeDirectory=gunicorn
 WorkingDirectory=/home/sevicontrol
 ExecStart=/usr/bin/gunicorn3 --pid /run/sevi-control/pid  \
