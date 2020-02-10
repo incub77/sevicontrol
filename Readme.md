@@ -2,9 +2,9 @@ How it works
 ============
             
  The home ventilation system is controlled via a small surface mounted box, that houses two components. 
- A small control panel, with some buttons to switch modes and a controller board, that basically drives the fans.
+ A small control panel with some buttons to switch modes and a controller board, that basically drives the fans.
  The control panel and the controller board are connected with four wires. 
- The outer two wires provide 12V DC for the board and the fans, while the inner two wires are used by a RS-485 bus.
+ The outer two wires provide 12V DC for the board and the fans, while the inner two wires are used for a RS-485 bus.
  To control the home ventilation system, we disconnect the bus and build two busses with a Raspberry Pi in the middle.
      
  
@@ -29,9 +29,9 @@ How it works
                                    USB-adapter   
 I was not able to identify the protocol used on the bus. 
 It seems to be a proprietary protocol with an XOR "checksum" at the end of each message. 
-The software uses the checksum to check whether a message from the control panel was received properly. The messages
-used to control the ventilation system have been captured and are being replayed by the Pi to now control the system.
-There are four messages being send by the control panel, that seem to have no effect on the system. They are probably 
+The software uses the checksum to check whether a message from the control panel was received properly. The messages 
+controlling the fans have been captured and are being replayed by the Pi.
+There are four messages from the control panel, that seem to have no effect on the system. They are probably 
 meant to query sensors, that are not present in my installation. These messages are passed through by the software.     
       
 
