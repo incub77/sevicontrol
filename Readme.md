@@ -1,3 +1,40 @@
+How it works
+============
+            
+ The home ventilation system is controlled via a small surface mounted box, that houses two components. 
+ A small control panel, with some buttons to switch modes and a controller board, that basically drives the fans.
+ The control panel and the controller board are connected with four wires. 
+ The outer two wires provide 12V DC for the board and the fans, while the inner two wires are used by a RS-485 bus.
+ To control the home ventilation system, we disconnect the bus and build two busses with a Raspberry Pi in the middle.
+     
+ 
+    +--------------------+--------------------+    
+    |                    |                    |
+    |     Controller     |       Control      |
+    |                    |        Panel       |
+    |                    |                    |
+    |         |          |          |         |
+    +--------------------+--------------------+
+              |                     |     
+              |                     +------+
+              +-------------------------+  |
+                                        |  |
+               +--------------------+   |  | <-- dual wires for RS-485
+               |                    |   |  |
+               |    RaspberryPi     |==|+  |
+               |                    |      |
+               |                    |==|---+
+               +--------------------+ ^
+                                      |
+                                   USB-adapter   
+I was not able to identify the protocol used on the bus. 
+It seems to be a proprietary protocol with an XOR "checksum" at the end of each message. 
+The software uses the checksum to check whether a message from the control panel was received properly. The messages
+used to control the ventilation system have been captured and are being replayed by the Pi to now control the system.
+There are four messages being send by the control panel, that seem to have no effect on the system. They are probably 
+meant to query sensors, that are not present in my installation. These messages are passed through by the software.     
+      
+
 Compatibility
 =============
 
@@ -21,17 +58,19 @@ I assume you have a brand new Raspbian installed like described on
 `sudo pip3 install -r requirements.txt`
 4. Allow none priviliged users access to USB ports    
 `cd provisioning`  
-`sudo cp ./etc/udev/rules.d/50-sevicontrol-usb.rules /etc/udev/rules.d/`
-5. Register systemd service  
-`sudo cp ./etc/systemd/system/* /etc/systemd/system/`  
-`sudo systemctl enable sevi-control`
+`sudo cp ./etc/udev/rules.d/50-sevicontrol-usb.rules /etc/udev/rules.d/`  
+5. Copy nginx config  
+`sudo cp ./etc/nginx/nginx.conf /etc/nginx/`  
 6. Setup tmp files  
 `sudo cp ./etc/tmpfiles.d/* /etc/tmpfiles.d/`  
 7. Change owner  
 `sudo chown nobody:nogroup -R /home/sevicontrol`
-8. Edit config.yaml to match your settings  
+8. Register systemd services  
+`sudo cp ./etc/systemd/system/* /etc/systemd/system/`  
+`sudo systemctl enable sevi-control`
+9. Edit config.yaml to match your settings  
 `sudo vi config.yaml`  
-9. Restart  
+10. Restart  
 `sudo shutdown -r now`
 
 
