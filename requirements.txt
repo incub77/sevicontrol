@@ -2,3 +2,4 @@ PySerial
 flask
 flask-cors
 pyyaml
+requests

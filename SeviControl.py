@@ -18,6 +18,7 @@ from sleepThread import SleepThread
 from cronCommands import CronCommands
 from panelStatus import PanelStatus
 from fanout import Fanout
+from linker import Linker
 from inMemoryLogHandler import InMemoryLogHandler
 from modes import Modes
 
@@ -45,6 +46,12 @@ panel_in = Queue()
 panel_out = Queue()
 raw_bypass_queue = Queue()
 cmd_to_control_queue = Queue()
+cmd_to_linker_queue = ...
+
+fanout_queues_list = [cmd_to_control_queue]
+if 'link' in cfg:
+    cmd_to_linker_queue = Queue()
+    fanout_queues_list.append(cmd_to_linker_queue)
 
 # wire threads and queues
 # TODO: logic_bord_in is ignored... we should listen to any msgs that could appear
@@ -60,11 +67,15 @@ panel_thread = ConnectorThread(
     panel_out)
 panel_thread.start()
 
-fanout_thread = Fanout(cmd_queue, [cmd_to_control_queue])
+fanout_thread = Fanout(cmd_queue, fanout_queues_list)
 fanout_thread.start()
 
 ctl_thread = ControlThread(logic_board_out, raw_bypass_queue, cmd_to_control_queue)
 ctl_thread.start()
+
+if 'link' in cfg:
+    linker_thread = Linker(cfg['link']['url'], cmd_to_linker_queue)
+    linker_thread.start()
 
 panel_status_thread = PanelStatus(panel_in, cmd_queue, raw_bypass_queue)
 panel_status_thread.start()
