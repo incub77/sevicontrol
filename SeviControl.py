@@ -242,6 +242,17 @@ def set_sleep():
             sleep_thread.sleep(int(request.args[key]))
     return "Ok", 200
 
+@app.route("/linkModeAvailable")
+def link_mode_availalbe():
+    resp = "false"
+    if "link" in cfg:
+        resp = "true"
+    return app.response_class(
+        response=json.dumps(resp, indent=2),
+        status=200,
+        mimetype='application/json'
+    )
+
 
 
 if __name__ == '__main__':
