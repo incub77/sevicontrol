@@ -24,7 +24,7 @@ from modes import Modes
 # open configuration file
 cfg = ...
 with open('config.yaml') as yamlfile:
-    cfg = yaml.load(yamlfile)
+    cfg = yaml.load(yamlfile, yaml.Loader)
 
 # setup logging
 inMemoryHandler = InMemoryLogHandler(logging.INFO)
