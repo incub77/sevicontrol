@@ -242,11 +242,13 @@ def set_sleep():
             sleep_thread.sleep(int(request.args[key]))
     return "Ok", 200
 
-@app.route("/linkModeAvailable")
+@app.route("/linkMode")
 def link_mode_availalbe():
-    resp = "false"
+    resp = {"available": "false", "active": "false"}
     if "link" in cfg:
-        resp = "true"
+        resp['available'] = "true"
+        if linker_thread.act:
+            resp['active'] = "true"
     return app.response_class(
         response=json.dumps(resp, indent=2),
         status=200,

@@ -11,14 +11,19 @@ class Linker(Thread):
         self.in_queue = in_queue
         self.url = url
         self.log = logging.getLogger("Linker-"+self.url)
+        self.act = True
+
+    def active(self, act):
+        self.act = act
 
     def run(self):
         while True:
             sleep(0.5)
             try:
                 mode = self.in_queue.get(block=False)
-                r = get(self.url+'/set?'+mode.name)
-                r.raise_for_status()
+                if self.act:
+                    r = get(self.url+'/set?'+mode.name)
+                    r.raise_for_status()
             except Empty:
                 pass
             except (HTTPError, ConnectionError, ConnectTimeout) as e:
