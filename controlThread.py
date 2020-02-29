@@ -32,7 +32,6 @@ class ControlThread(Thread):
         if self.current_direction is None:
             self.current_direction = True
             self.last_direction_change = time()
-        # TODO: try catch blocking queue
         if new_mode == Modes["ON"]:
             self.put_logic_board_queue(Commands.BY_MODE[new_mode])
             self.direction_change_interval = 75
