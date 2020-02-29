@@ -255,6 +255,18 @@ def link_mode_availalbe():
         mimetype='application/json'
     )
 
+@app.route("/activateLink")
+def link_active():
+    for key in request.args.keys():
+        if key not in ['true', 'false']:
+            return "Invalid parameter: "+key, 400
+        else:
+            app.logger.info("Set Link to '%s' from '%s' (IP: %s) ",
+                            'active' if key == 'true' else 'inactive',
+                            get_hostname_by_addr(request.environ['HTTP_X_FORWARDED_FOR']),
+                            request.environ['HTTP_X_FORWARDED_FOR'])
+            linker_thread.active(True if key == 'true' else False)
+    return "Ok", 200
 
 
 if __name__ == '__main__':

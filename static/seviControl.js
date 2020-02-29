@@ -9,7 +9,7 @@ const {MDCTopAppBar} = mdc.topAppBar;
 
 const reqURL = document.location.href.slice(0, -1);
 
-const selector = '.mdc-button, .mdc-icon-button, .mdc-card__primary-action';
+const selector = '.mdc-button, .mdc-card__primary-action';
 const ripples = [].map.call(document.querySelectorAll(selector),
     function (el) {
         return new MDCRipple(el);
@@ -21,11 +21,6 @@ function CreateUUID() {
   )
 }
 
-
-const refreshButton = document.getElementById("button_refresh");
-refreshButton.addEventListener("click", function() {
-    document.location.reload();
-});
 
 // Update status box
 function updateStatusBox() {
