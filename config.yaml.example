@@ -4,6 +4,6 @@ panel:
 controller:
   device: /dev/ttyUSB1
   baudrate: 1000
---- # uncomment to link commands with a second pi
+# uncomment to link commands with a second pi
 # link:
 #   url: http://sevicontrol2
