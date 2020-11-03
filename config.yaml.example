@@ -7,3 +7,9 @@ controller:
 # uncomment to link commands with a second pi
 # link:
 #   url: http://sevicontrol2
+# uncomment to enable mqtt support
+# mqtt:
+#   url: mqtt://hassio.local
+#   port: 8333
+#   user: whoami
+#   passwd: secret

@@ -19,6 +19,7 @@ from cronCommands import CronCommands
 from panelStatus import PanelStatus
 from fanout import Fanout
 from linker import Linker
+from mqtt import Mqtt
 from inMemoryLogHandler import InMemoryLogHandler
 from modes import Modes
 
@@ -47,11 +48,16 @@ panel_out = Queue()
 raw_bypass_queue = Queue()
 cmd_to_control_queue = Queue()
 cmd_to_linker_queue = ...
+cmd_to_mqtt_queue = ...
 
 fanout_queues_list = [cmd_to_control_queue]
-if 'link' in cfg:
+if 'link' in cfg and cfg['link']['url']:
     cmd_to_linker_queue = Queue()
     fanout_queues_list.append(cmd_to_linker_queue)
+
+if 'mqtt' in cfg and cfg['mqtt']['url']:
+    cmd_to_mqtt_queue = Queue()
+    fanout_queues_list.append(cmd_to_mqtt_queue)
 
 # wire threads and queues
 # TODO: logic_bord_in is ignored... we should listen to any msgs that could appear
@@ -73,9 +79,18 @@ fanout_thread.start()
 ctl_thread = ControlThread(logic_board_out, raw_bypass_queue, cmd_to_control_queue)
 ctl_thread.start()
 
-if 'link' in cfg:
+if 'link' in cfg and cfg['link']['url']:
     linker_thread = Linker(cfg['link']['url'], cmd_to_linker_queue)
     linker_thread.start()
+
+if 'mqtt' in cfg and cfg['mqtt']['url']:
+    mqtt_thread = Mqtt(cfg['mqtt']['url'],
+                       cfg['mqtt']['port'],
+                       cfg['mqtt']['user'],
+                       cfg['mqtt']['passwd'],
+                       cmd_to_mqtt_queue,
+                       cmd_queue)
+    mqtt_thread.start()
 
 panel_status_thread = PanelStatus(panel_in, cmd_queue, raw_bypass_queue)
 panel_status_thread.start()
