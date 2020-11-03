@@ -3,3 +3,4 @@ flask
 flask-cors
 pyyaml
 requests
+paho-mqtt
