@@ -86,6 +86,8 @@ if 'link' in cfg and cfg['link']['url']:
 if 'mqtt' in cfg and cfg['mqtt']['url']:
     mqtt_thread = Mqtt(cfg['mqtt']['url'],
                        cfg['mqtt']['port'],
+                       cfg['mqtt']['use_ssl'],
+                       cfg['mqtt']['verify_cert'],
                        cfg['mqtt']['user'],
                        cfg['mqtt']['passwd'],
                        cmd_to_mqtt_queue,
