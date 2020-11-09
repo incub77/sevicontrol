@@ -9,7 +9,7 @@ controller:
 #   url: http://sevicontrol2
 # uncomment to enable mqtt support
 # mqtt:
-#   url: mqtt://hassio.local
-#   port: 8333
+#   url: hassio.local
+#   port: 1883
 #   user: whoami
 #   passwd: secret
