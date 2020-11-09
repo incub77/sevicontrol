@@ -7,7 +7,6 @@ import json
 from version import VERSION
 from modes import Modes
 
-
 STATE_TOPIC = 'sevicontrol/on/state'
 COMMAND_TOPIC = 'sevicontrol/on/set'
 OSCILLATION_STATE_TOPIC = 'sevicontrol/oscillation/state'
@@ -33,10 +32,10 @@ DISCOVER_MSG = {"platform": "mqtt",
                 "speeds": ["low", "medium", "high"],
                 "unique_id": "sevicontrol",
                 "device": {"name": "Sevicontrol",
-                          "model": "Sevicontrol ventilation system",
-                          "manufacturer": "incub",
-                          "identifiers": "sevicontrol",
-                          "sw_version": str(VERSION)
+                           "model": "Sevicontrol ventilation system",
+                           "manufacturer": "incub",
+                           "identifiers": "sevicontrol",
+                           "sw_version": str(VERSION)
                            }
                 }
 
@@ -49,7 +48,7 @@ class Mqtt(Thread):
         self.url = url
         self.port = port
         self.current_mode = Modes['OFF']
-        self.log = logging.getLogger("MQTT-"+url)
+        self.log = logging.getLogger("MQTT-" + url)
         self.log.setLevel(logging.DEBUG)
         self.mqtt_client = mqtt_client.Client(client_id="Sevicontrol", clean_session=True)
         self.mqtt_client.username_pw_set(user, passwd)
@@ -59,6 +58,9 @@ class Mqtt(Thread):
             self.mqtt_client.tls_insecure_set(True)
         self.mqtt_client.enable_logger()
 
+    def __del__(self):
+        self.mqtt_client.disconnect()
+
     def on_connect(self, client, userdate, flags, rc):
         self.log.debug("Subscribing topics.")
         self.mqtt_client.subscribe([(COMMAND_TOPIC, 0), (SPEED_COMMAND_TOPIC, 0), (OSCILLATION_COMMAND_TOPIC, 0)])
@@ -66,7 +68,6 @@ class Mqtt(Thread):
         self.mqtt_client.message_callback_add(SPEED_COMMAND_TOPIC, self.on_speed_change)
         self.mqtt_client.message_callback_add(OSCILLATION_COMMAND_TOPIC, self.on_oscillation_change)
         self.mqtt_client.publish('homeassistant/fan/sevicontrol/config', json.dumps(DISCOVER_MSG), retain=True)
-
 
     def publish_state(self, state):
         if state in ['on', 'off']:
@@ -78,7 +79,7 @@ class Mqtt(Thread):
         payload = message.payload.decode('utf-8')
         if payload == 'on' and self.current_mode.name != 'OFF':
             return
-        self.log.info("State change to: "+payload)
+        self.log.info("State change to: " + payload)
         if payload == 'on':
             self.out_queue.put(Modes['ON'])
         elif payload == 'off':
@@ -100,18 +101,17 @@ class Mqtt(Thread):
 
         new_mode = ...
         if speed == 'low':
-            new_mode = oscillation+'1'
+            new_mode = oscillation + '1'
         elif speed == 'medium':
-            new_mode = oscillation+'2'
+            new_mode = oscillation + '2'
         elif speed == 'high':
-            new_mode = oscillation+'4'
+            new_mode = oscillation + '4'
         else:
             self.log.error("Unknown speed: '%s'" % speed)
             return
 
         self.log.info("Setting new mode: %s" % new_mode)
         self.out_queue.put(Modes[new_mode])
-
 
     def publish_oscillation(self, oscillation):
         if oscillation in ['on', 'off']:
@@ -128,9 +128,9 @@ class Mqtt(Thread):
 
         new_mode = ...
         if oscillation == 'on':
-            new_mode = 'W'+speed
+            new_mode = 'W' + speed
         elif oscillation == 'off':
-            new_mode = 'S'+speed
+            new_mode = 'S' + speed
         else:
             self.log.error("Unknow oscillation: '%s'" % oscillation)
 
