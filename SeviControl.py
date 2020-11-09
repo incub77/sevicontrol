@@ -132,6 +132,7 @@ def set_level():
                 sleep_thread.reset()
     return "Ok", 200
 
+
 @app.route("/setMode")
 def set_mode():
     for key in request.args.keys():
@@ -148,6 +149,7 @@ def set_mode():
                 sleep_thread.reset()
     return "Ok", 200
 
+
 @app.route("/set")
 def set_all():
     for key in request.args.keys():
@@ -162,6 +164,7 @@ def set_all():
             sleep_thread.reset()
     return "Ok", 200
 
+
 @app.route("/cronData")
 def get_cron_data():
     cron_data = cron_thread.get_cron_data()
@@ -172,6 +175,7 @@ def get_cron_data():
         status=200,
         mimetype='application/json'
     )
+
 
 @app.route("/delCronData")
 def del_cron_data():
@@ -186,6 +190,7 @@ def del_cron_data():
             cron_thread.del_cron_data(request.args[key].split(','))
     return "Ok", 200
 
+
 @app.route("/logs")
 def get_logs():
     logs = inMemoryHandler.get_logs()[::-1]
@@ -195,6 +200,7 @@ def get_logs():
         status=200,
         mimetype='application/json'
     )
+
 
 @app.route("/status")
 def status():
@@ -213,6 +219,7 @@ def status():
         status=200,
         mimetype='application/json'
     )
+
 
 @app.route("/panelStatus")
 def panel_status():
@@ -234,6 +241,7 @@ def panel_status():
         mimetype='application/json'
     )
 
+
 @app.route("/getSleep")
 def get_sleep():
     resp = "-"
@@ -245,6 +253,7 @@ def get_sleep():
         status=200,
         mimetype='application/json'
     )
+
 
 @app.route("/setSleep")
 def set_sleep():
@@ -259,6 +268,7 @@ def set_sleep():
             sleep_thread.sleep(int(request.args[key]))
     return "Ok", 200
 
+
 @app.route("/linkMode")
 def link_mode_availalbe():
     resp = {"available": "false", "active": "false"}
@@ -271,6 +281,7 @@ def link_mode_availalbe():
         status=200,
         mimetype='application/json'
     )
+
 
 @app.route("/activateLink")
 def link_active():
