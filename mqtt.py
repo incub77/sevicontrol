@@ -42,7 +42,7 @@ DISCOVER_MSG = {"platform": "mqtt",
 
 
 class Mqtt(Thread):
-    def __init__(self, url, port, user, passwd, in_queue, out_queue):
+    def __init__(self, url, port, use_ssl, verify_cert, user, passwd, in_queue, out_queue):
         super().__init__(daemon=True)
         self.in_queue = in_queue
         self.out_queue = out_queue
@@ -53,6 +53,10 @@ class Mqtt(Thread):
         self.log.setLevel(logging.DEBUG)
         self.mqtt_client = mqtt_client.Client(client_id="Sevicontrol", clean_session=True)
         self.mqtt_client.username_pw_set(user, passwd)
+        if use_ssl:
+            self.mqtt_client.tls_set()
+        if not verify_cert:
+            self.mqtt_client.tls_insecure_set(True)
         self.mqtt_client.enable_logger()
 
     def on_connect(self, client, userdate, flags, rc):
@@ -64,7 +68,7 @@ class Mqtt(Thread):
         self.mqtt_client.publish('homeassistant/fan/sevicontrol/config', json.dumps(DISCOVER_MSG), retain=True)
 
 
-    def set_state(self, state):
+    def publish_state(self, state):
         if state in ['on', 'off']:
             self.mqtt_client.publish(STATE_TOPIC, state, retain=True)
         else:
@@ -80,7 +84,7 @@ class Mqtt(Thread):
         elif payload == 'off':
             self.out_queue.put(Modes['OFF'])
 
-    def set_speed(self, speed):
+    def publish_speed(self, speed):
         if speed in ['low', 'medium', 'high']:
             self.mqtt_client.publish(SPEED_STATE_TOPIC, speed, retain=True)
         else:
@@ -109,7 +113,7 @@ class Mqtt(Thread):
         self.out_queue.put(Modes[new_mode])
 
 
-    def set_oscillation(self, oscillation):
+    def publish_oscillation(self, oscillation):
         if oscillation in ['on', 'off']:
             self.mqtt_client.publish(OSCILLATION_STATE_TOPIC, oscillation, retain=True)
         else:
@@ -155,23 +159,23 @@ class Mqtt(Thread):
 
         return (state, speed, oscillation)
 
-    def set_mode(self, mode):
-        hassio_mode = self.translate_mode_to_hassio()
-        self.set_state(hassio_mode[0])
-        self.set_speed(hassio_mode[1])
-        self.set_oscillation(hassio_mode[2])
+    def publish_mode(self, mode):
+        hassio_mode = self.translate_mode_to_hassio(mode)
+        self.publish_state(hassio_mode[0])
+        self.publish_speed(hassio_mode[1])
+        self.publish_oscillation(hassio_mode[2])
 
     def run(self):
         self.mqtt_client.on_connect = self.on_connect
         self.mqtt_client.connect(self.url, self.port)
         self.mqtt_client.loop_start()
-        self.set_mode(self.current_mode)
+        self.publish_mode(self.current_mode)
 
         while True:
-            sleep(0.5)
+            sleep(0.25)
             try:
                 mode = self.in_queue.get(block=False)
-                self.set_mode(mode)
+                self.publish_mode(mode)
                 self.current_mode = mode
             except Empty:
                 pass
