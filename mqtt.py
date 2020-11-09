@@ -133,8 +133,8 @@ class Mqtt(Thread):
         self.log.info("Setting new mode: %s" % new_mode)
         self.out_queue.put(Modes[new_mode])
 
-
-    def translate_mode_to_hassio(self, mode):
+    @staticmethod
+    def translate_mode_to_hassio(mode):
         state = 'on'
         speed = 'low'
         oscillation = 'on'
