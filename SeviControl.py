@@ -272,7 +272,7 @@ def set_sleep():
 @app.route("/linkMode")
 def link_mode_availalbe():
     resp = {"available": "false", "active": "false"}
-    if "link" in cfg:
+    if "link" in cfg and cfg['link']['url']:
         resp['available'] = "true"
         if linker_thread.act:
             resp['active'] = "true"
