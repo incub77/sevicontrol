@@ -12,6 +12,6 @@ controller:
 #   url: hassio.local
 #   port: 1883
 #   use_ssl: true
-#   verify_cert: false
+#   validate_cert: false
 #   user: whoami
 #   passwd: secret

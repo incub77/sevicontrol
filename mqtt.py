@@ -41,7 +41,7 @@ DISCOVER_MSG = {"platform": "mqtt",
 
 
 class Mqtt(Thread):
-    def __init__(self, url, port, use_ssl, verify_cert, user, passwd, in_queue, out_queue):
+    def __init__(self, url, port, use_ssl, validate_cert, user, passwd, in_queue, out_queue):
         super().__init__(daemon=True)
         self.in_queue = in_queue
         self.out_queue = out_queue
@@ -54,7 +54,7 @@ class Mqtt(Thread):
         self.mqtt_client.username_pw_set(user, passwd)
         if use_ssl:
             self.mqtt_client.tls_set()
-        if not verify_cert:
+        if not validate_cert:
             self.mqtt_client.tls_insecure_set(True)
         self.mqtt_client.enable_logger()
 
