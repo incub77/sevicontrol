@@ -54,7 +54,7 @@ class Mqtt(Thread):
         self.mqtt_client.username_pw_set(user, passwd)
         if use_ssl:
             self.mqtt_client.tls_set()
-        if not validate_cert:
+        if use_ssl and not validate_cert:
             self.mqtt_client.tls_insecure_set(True)
         self.mqtt_client.enable_logger()
 
