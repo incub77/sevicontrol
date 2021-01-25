@@ -110,7 +110,10 @@ CORS(app)
 
 
 def get_hostname_by_addr(ip):
-    hostname = socket.gethostbyaddr(ip)[0]
+    try:
+        hostname = socket.gethostbyaddr(ip)[0]
+    except (socket.herror, socket.gaierror):
+        hostname = "unknown"
     if "." in hostname:
         hostname = hostname.split('.')[0]
     return hostname
