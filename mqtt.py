@@ -157,7 +157,7 @@ class Mqtt(Thread):
             elif mode.name.endswith('4'):
                 speed = 'high'
 
-        return (state, speed, oscillation)
+        return state, speed, oscillation
 
     def publish_mode(self, mode):
         hassio_mode = self.translate_mode_to_hassio(mode)

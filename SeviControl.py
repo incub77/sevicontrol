@@ -3,25 +3,24 @@
 import json
 import logging.handlers
 import socket
-import yaml
 from queue import Queue
 from time import strftime, localtime
 
+import yaml
 from flask import Flask, request
 from flask_cors import CORS
 
-from connectorRS485 import ConnectorRS485
-from connectorThread import ConnectorThread
 from connectorFactory import ConnectorFactory
+from connectorThread import ConnectorThread
 from controlThread import ControlThread
-from sleepThread import SleepThread
 from cronCommands import CronCommands
-from panelStatus import PanelStatus
 from fanout import Fanout
-from linker import Linker
-from mqtt import Mqtt
 from inMemoryLogHandler import InMemoryLogHandler
+from linker import Linker
 from modes import Modes
+from mqtt import Mqtt
+from panelStatus import PanelStatus
+from sleepThread import SleepThread
 
 # open configuration file
 cfg = ...

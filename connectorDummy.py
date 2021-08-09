@@ -1,16 +1,19 @@
 import logging
 
-class ConnectorDummy():
+
+class ConnectorDummy:
     def __init__(self):
         self.log = logging.getLogger("connector-Dummy")
         self.port = "dummy"
         self.log.setLevel(logging.DEBUG)
 
-    def read_msg(self):
+    @staticmethod
+    def read_msg():
         return None
 
     def send_msg(self, msg):
         self.log.debug("Writing msg: %s" % msg)
 
-    def inWaiting(self):
+    @staticmethod
+    def inWaiting():
         return 0

@@ -5,7 +5,6 @@ from modes import Modes
 import logging
 
 
-
 class SleepThread(Thread):
     def __init__(self, cmd_queue):
         super().__init__(daemon=True)
@@ -41,4 +40,3 @@ class SleepThread(Thread):
                     self.cmd_queue.put(Modes.ON)
                 except Full:
                     self.log.critical("Command queue full")
-
