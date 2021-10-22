@@ -11,8 +11,9 @@ STATE_TOPIC = 'sevicontrol/on/state'
 COMMAND_TOPIC = 'sevicontrol/on/set'
 OSCILLATION_STATE_TOPIC = 'sevicontrol/oscillation/state'
 OSCILLATION_COMMAND_TOPIC = 'sevicontrol/oscillation/set'
-SPEED_STATE_TOPIC = 'sevicontrol/speed/state'
-SPEED_COMMAND_TOPIC = 'sevicontrol/speed/set'
+PERCENTAGE_STATE_TOPIC = 'sevicontrol/speed/state'
+PERCENTAGE_COMMAND_TOPIC = 'sevicontrol/speed/set'
+
 
 DISCOVER_MSG = {"platform": "mqtt",
                 "name": "Sevicontrol",
@@ -20,16 +21,14 @@ DISCOVER_MSG = {"platform": "mqtt",
                 "command_topic": COMMAND_TOPIC,
                 "oscillation_state_topic": OSCILLATION_STATE_TOPIC,
                 "oscillation_command_topic": OSCILLATION_COMMAND_TOPIC,
-                "speed_state_topic": SPEED_STATE_TOPIC,
-                "speed_command_topic": SPEED_COMMAND_TOPIC,
+                "percentage_state_topic": PERCENTAGE_STATE_TOPIC,
+                "percentage_command_topic": PERCENTAGE_COMMAND_TOPIC,
                 "payload_on": "on",
                 "payload_off": "off",
                 "payload_oscillation_on": "on",
                 "payload_oscillation_off": "off",
-                "payload_low_speed": "low",
-                "payload_medium_speed": "medium",
-                "payload_high_speed": "high",
-                "speeds": ["low", "medium", "high"],
+                "speed_range_min": 1,
+                "speed_range_max": 4,
                 "unique_id": "sevicontrol",
                 "device": {"name": "Sevicontrol",
                            "model": "Sevicontrol ventilation system",
@@ -39,7 +38,7 @@ DISCOVER_MSG = {"platform": "mqtt",
                            }
                 }
 
-
+# noinspection PyUnusedLocal
 class Mqtt(Thread):
     def __init__(self, url, port, use_ssl, validate_cert, user, passwd, in_queue, out_queue):
         super().__init__(daemon=True)
@@ -63,9 +62,9 @@ class Mqtt(Thread):
 
     def on_connect(self, client, userdate, flags, rc):
         self.log.debug("Subscribing topics.")
-        self.mqtt_client.subscribe([(COMMAND_TOPIC, 0), (SPEED_COMMAND_TOPIC, 0), (OSCILLATION_COMMAND_TOPIC, 0)])
+        self.mqtt_client.subscribe([(COMMAND_TOPIC, 0), (PERCENTAGE_COMMAND_TOPIC, 0), (OSCILLATION_COMMAND_TOPIC, 0)])
         self.mqtt_client.message_callback_add(COMMAND_TOPIC, self.on_state_change)
-        self.mqtt_client.message_callback_add(SPEED_COMMAND_TOPIC, self.on_speed_change)
+        self.mqtt_client.message_callback_add(PERCENTAGE_COMMAND_TOPIC, self.on_speed_change)
         self.mqtt_client.message_callback_add(OSCILLATION_COMMAND_TOPIC, self.on_oscillation_change)
         self.mqtt_client.publish('homeassistant/fan/sevicontrol/config', json.dumps(DISCOVER_MSG), retain=True)
 
@@ -86,8 +85,8 @@ class Mqtt(Thread):
             self.out_queue.put(Modes['OFF'])
 
     def publish_speed(self, speed):
-        if speed in ['low', 'medium', 'high']:
-            self.mqtt_client.publish(SPEED_STATE_TOPIC, speed, retain=True)
+        if speed in ['1', '2', '3', "4"]:
+            self.mqtt_client.publish(PERCENTAGE_STATE_TOPIC, speed, retain=True)
         else:
             self.log.error("Invalid speed.")
 
@@ -99,16 +98,11 @@ class Mqtt(Thread):
         else:
             oscillation = 'W'
 
-        new_mode = ...
-        if speed == 'low':
-            new_mode = oscillation + '1'
-        elif speed == 'medium':
-            new_mode = oscillation + '2'
-        elif speed == 'high':
-            new_mode = oscillation + '4'
-        else:
+        if speed not in ['1', '2', '3', '4']:
             self.log.error("Unknown speed: '%s'" % speed)
             return
+
+        new_mode = oscillation + speed
 
         self.log.info("Setting new mode: %s" % new_mode)
         self.out_queue.put(Modes[new_mode])
@@ -150,12 +144,7 @@ class Mqtt(Thread):
         else:
             if mode.name.startswith('S'):
                 oscillation = 'off'
-            if mode.name.endswith('2'):
-                speed = 'medium'
-            elif mode.name.endswith('3'):
-                speed = 'medium'
-            elif mode.name.endswith('4'):
-                speed = 'high'
+            speed = mode.name[-1]
 
         return state, speed, oscillation
 
