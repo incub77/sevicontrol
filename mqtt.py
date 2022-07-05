@@ -72,7 +72,7 @@ class Mqtt(Thread):
         if state in ['on', 'off']:
             self.mqtt_client.publish(STATE_TOPIC, state, retain=True)
         else:
-            self.log.error("Invalid state.")
+            self.log.error("Invalid state '%s'" % state)
 
     def on_state_change(self, client, userdata, message):
         payload = message.payload.decode('utf-8')
@@ -88,7 +88,7 @@ class Mqtt(Thread):
         if speed in ['1', '2', '3', "4"]:
             self.mqtt_client.publish(PERCENTAGE_STATE_TOPIC, speed, retain=True)
         else:
-            self.log.error("Invalid speed.")
+            self.log.error("Invalid speed: '%s'" % speed)
 
     def on_speed_change(self, client, userdata, message):
         speed = message.payload.decode('utf-8')
@@ -134,7 +134,7 @@ class Mqtt(Thread):
     @staticmethod
     def translate_mode_to_hassio(mode):
         state = 'on'
-        speed = 'low'
+        speed = '1'
         oscillation = 'on'
 
         if mode == Modes['OFF']:
